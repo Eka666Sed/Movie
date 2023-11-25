@@ -1,6 +1,7 @@
-package com.yandexpracticum.movie
+package com.yandexpracticum.movie.util
 
 import android.app.Activity
+import android.content.Context
 import com.yandexpracticum.movie.data.MoviesRepositoryImpl
 import com.yandexpracticum.movie.data.network.RetrofitNetworkClient
 import com.yandexpracticum.movie.domain.api.MoviesInteractor
@@ -11,12 +12,12 @@ import com.yandexpracticum.movie.presentation.PosterController
 import com.yandexpracticum.movie.ui.movies.MoviesAdapter
 
 object Creator {
-    private fun getMoviesRepository(): MoviesRepository {
-        return MoviesRepositoryImpl(RetrofitNetworkClient())
+    private fun getMoviesRepository(context: Context): MoviesRepository {
+        return MoviesRepositoryImpl(RetrofitNetworkClient(context))
     }
 
-    fun provideMoviesInteractor(): MoviesInteractor {
-        return MoviesInteractorImpl(getMoviesRepository())
+    fun provideMoviesInteractor(context: Context): MoviesInteractor {
+        return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
     fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {

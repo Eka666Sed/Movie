@@ -3,7 +3,7 @@ package com.yandexpracticum.movie.ui.poster
 import android.app.Activity
 import android.os.Bundle
 import com.yandexpracticum.movie.R
-import com.yandexpracticum.movie.Creator
+import com.yandexpracticum.movie.util.Creator
 
 class PosterActivity : Activity() {
 

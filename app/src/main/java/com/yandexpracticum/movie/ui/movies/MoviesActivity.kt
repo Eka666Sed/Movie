@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import com.yandexpracticum.movie.ui.poster.PosterActivity
 import com.yandexpracticum.movie.R
-import com.yandexpracticum.movie.Creator
+import com.yandexpracticum.movie.util.Creator
 
 class MoviesActivity : Activity() {
 

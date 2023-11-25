@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yandexpracticum.movie.R
 import androidx.recyclerview.widget.RecyclerView
-import com.yandexpracticum.movie.Creator
+import com.yandexpracticum.movie.util.Creator
 import com.yandexpracticum.movie.domain.api.MoviesInteractor
 import com.yandexpracticum.movie.domain.models.Movie
 import com.yandexpracticum.movie.ui.movies.MoviesAdapter
@@ -22,7 +22,7 @@ class MoviesSearchController(private val activity: Activity,
                              private val adapter: MoviesAdapter
 ) {
 
-    private val moviesInteractor = Creator.provideMoviesInteractor()
+    private val moviesInteractor = Creator.provideMoviesInteractor(activity)
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -81,14 +81,18 @@ class MoviesSearchController(private val activity: Activity,
             progressBar.visibility = View.VISIBLE
 
             moviesInteractor.searchMovies(queryInput.text.toString(), object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>) {
+                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                     handler.post {
                         progressBar.visibility = View.GONE
-                        movies.clear()
-                        movies.addAll(foundMovies)
-                        moviesList.visibility = View.VISIBLE
-                        adapter.notifyDataSetChanged()
-                        if (movies.isEmpty()) {
+                        if (foundMovies != null) {
+                            movies.clear()
+                            movies.addAll(foundMovies)
+                            adapter.notifyDataSetChanged()
+                            moviesList.visibility = View.VISIBLE
+                        }
+                        if (errorMessage != null) {
+                            showMessage(activity.getString(R.string.something_went_wrong), errorMessage)
+                        } else if (movies.isEmpty()) {
                             showMessage(activity.getString(R.string.nothing_found), "")
                         } else {
                             hideMessage()
