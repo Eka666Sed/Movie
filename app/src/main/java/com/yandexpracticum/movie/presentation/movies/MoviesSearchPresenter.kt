@@ -1,4 +1,4 @@
-package com.yandexpracticum.movie.presentation
+package com.yandexpracticum.movie.presentation.movies
 
 import android.os.Handler
 import android.app.Activity
@@ -18,20 +18,15 @@ import com.yandexpracticum.movie.domain.api.MoviesInteractor
 import com.yandexpracticum.movie.domain.models.Movie
 import com.yandexpracticum.movie.ui.movies.MoviesAdapter
 
-class MoviesSearchController(private val activity: Activity,
-                             private val adapter: MoviesAdapter
+class MoviesSearchPresenter(private val view: MoviesView,
+                            private val adapter: MoviesAdapter
 ) {
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(activity)
+    private val moviesInteractor = Creator.provideMoviesInteractor(view)
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
-
-    private lateinit var queryInput: EditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var moviesList: RecyclerView
-    private lateinit var progressBar: ProgressBar
 
     private val movies = ArrayList<Movie>()
 
@@ -40,35 +35,14 @@ class MoviesSearchController(private val activity: Activity,
     private val searchRunnable = Runnable { searchRequest() }
 
     fun onCreate() {
-        placeholderMessage = activity.findViewById(R.id.placeholderMessage)
-        queryInput = activity.findViewById(R.id.queryInput)
-        moviesList = activity.findViewById(R.id.locations)
-        progressBar = activity.findViewById(R.id.progressBar)
-
         adapter.movies = movies
-
-        moviesList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        moviesList.adapter = adapter
-
-        queryInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                searchDebounce()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
     }
 
     fun onDestroy() {
         handler.removeCallbacks(searchRunnable)
     }
 
-    private fun searchDebounce() {
+    fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }

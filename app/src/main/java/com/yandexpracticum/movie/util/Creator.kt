@@ -7,8 +7,9 @@ import com.yandexpracticum.movie.data.network.RetrofitNetworkClient
 import com.yandexpracticum.movie.domain.api.MoviesInteractor
 import com.yandexpracticum.movie.domain.api.MoviesRepository
 import com.yandexpracticum.movie.domain.impl.MoviesInteractorImpl
-import com.yandexpracticum.movie.presentation.MoviesSearchController
+import com.yandexpracticum.movie.presentation.movies.MoviesSearchPresenter
 import com.yandexpracticum.movie.presentation.PosterController
+import com.yandexpracticum.movie.presentation.movies.MoviesView
 import com.yandexpracticum.movie.ui.movies.MoviesAdapter
 
 object Creator {
@@ -20,8 +21,8 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {
-        return MoviesSearchController(activity, adapter)
+    fun provideMoviesSearchPresenter(moviesView: MoviesView, adapter: MoviesAdapter): MoviesSearchPresenter {
+        return MoviesSearchPresenter(view = moviesView, adapter = adapter)
     }
 
     fun providePosterController(activity: Activity): PosterController {
