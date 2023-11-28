@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yandexpracticum.movie.ui.poster.PosterActivity
 import com.yandexpracticum.movie.R
+import com.yandexpracticum.movie.domain.models.Movie
 import com.yandexpracticum.movie.presentation.movies.MoviesView
 import com.yandexpracticum.movie.util.Creator
 
@@ -35,12 +37,14 @@ class MoviesActivity : Activity(), MoviesView {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this, adapter)
+    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(moviesView = this, context = this,)
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
     private lateinit var moviesList: RecyclerView
     private lateinit var progressBar: ProgressBar
+
+    private var textWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,26 +55,29 @@ class MoviesActivity : Activity(), MoviesView {
         moviesList = activity.findViewById(R.id.locations)
         progressBar = activity.findViewById(R.id.progressBar)
 
-        moviesList.layoutManager = LinearLayoutManager(view, LinearLayoutManager.VERTICAL, false)
+        moviesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         moviesList.adapter = adapter
 
-        queryInput.addTextChangedListener(object : TextWatcher {
+        textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, after: Int) {
-                moviesSearchPresenter.searchDebounce()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                moviesSearchPresenter.searchDebounce(
+                    changedText = s?.toString() ?: ""
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
 
-        })
-        moviesSearchPresenter.onCreate()
+        }
+        textWatcher?.let { queryInput.addTextChangedListener(it) }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        textWatcher?.let { queryInput.addTextChangedListener(it) }
         moviesSearchPresenter.onDestroy()
     }
 
@@ -84,4 +91,25 @@ class MoviesActivity : Activity(), MoviesView {
         return current
     }
 
+    override fun showPlaceholderMessage(isVisible: Boolean) {
+        placeholderMessage.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    override fun showMoviesList(isVisible: Boolean) {
+        moviesList.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    override fun showProgressBar(isVisible: Boolean) {
+        progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    override fun changePlaceholderText(newPlaceholderText: String) {
+        placeholderMessage.text = newPlaceholderText
+    }
+
+    override fun updateMoviesList(newMoviesList: List<Movie>) {
+        adapter.movies.clear()
+        adapter.movies.addAll(newMoviesList)
+        adapter.notifyDataSetChanged()
+    }
 }

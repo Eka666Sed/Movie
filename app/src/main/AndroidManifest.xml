@@ -19,9 +19,6 @@
             android:name=".ui.poster.PosterActivity"
             android:exported="false" />
         <activity
-            android:name=".list_item_movie"
-            android:exported="false" />
-        <activity
             android:name=".ui.movies.MoviesActivity"
             android:exported="true">
             <intent-filter>
