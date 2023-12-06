@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yandexpracticum.movie.ui.poster.PosterActivity
@@ -50,10 +51,10 @@ class MoviesActivity : Activity(), MoviesView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movies)
 
-        placeholderMessage = activity.findViewById(R.id.placeholderMessage)
-        queryInput = activity.findViewById(R.id.queryInput)
-        moviesList = activity.findViewById(R.id.locations)
-        progressBar = activity.findViewById(R.id.progressBar)
+        placeholderMessage = findViewById(R.id.placeholderMessage)
+        queryInput = findViewById(R.id.queryInput)
+        moviesList = findViewById(R.id.locations)
+        progressBar = findViewById(R.id.progressBar)
 
         moviesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         moviesList.adapter = adapter
@@ -111,5 +112,8 @@ class MoviesActivity : Activity(), MoviesView {
         adapter.movies.clear()
         adapter.movies.addAll(newMoviesList)
         adapter.notifyDataSetChanged()
+    }
+    override fun showMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

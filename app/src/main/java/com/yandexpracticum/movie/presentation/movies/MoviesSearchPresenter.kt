@@ -3,7 +3,6 @@ package com.yandexpracticum.movie.presentation.movies
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.widget.Toast
 import com.yandexpracticum.movie.R
 import com.yandexpracticum.movie.domain.api.MoviesInteractor
 import com.yandexpracticum.movie.domain.models.Movie
@@ -78,8 +77,7 @@ class MoviesSearchPresenter(
             view.updateMoviesList(movies)
             view.changePlaceholderText(text)
             if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(context, additionalMessage, Toast.LENGTH_LONG)
-                    .show()
+                view.showMessage(additionalMessage)
             }
         } else {
             view.showPlaceholderMessage(false)
